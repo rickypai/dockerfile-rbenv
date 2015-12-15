@@ -23,12 +23,12 @@ RUN echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh # or /etc/profile
 RUN echo 'eval "$(rbenv init -)"' >> .bashrc
 
 # Install multiple versions of ruby
-ENV CONFIGURE_OPTS --disable-install-doc
+ENV CONFIGURE_OPTS "--disable-install-doc --enable-shared"
 ADD ./versions.txt /root/versions.txt
 RUN xargs -L 1 rbenv install < /root/versions.txt
 
 # Install Bundler for each version of ruby
-RUN echo 'gem: --no-rdoc --no-ri' >> /.gemrc
+RUN echo 'gem: --no-rdoc --no-ri --no-document' >> /.gemrc
 RUN bash -l -c 'for v in $(cat /root/versions.txt); do rbenv global $v; gem update --system && gem install bundler; done'
 
 # Generate a SSH key
@@ -45,3 +45,13 @@ RUN cat /root/.ssh/id_rsa.pub
 
 # Add GHE to known hosts
 RUN ssh-keyscan git.musta.ch >> ~/.ssh/known_hosts
+
+# Clone Monorail
+RUN git clone git@git.musta.ch:airbnb/airbnb.git
+RUN mv /airbnb /root/airbnb
+
+RUN apt-get install -y --force-yes libtool libcurl3-dev libmysqlclient-dev libmemcached-dev libsqlite3-dev
+RUN apt-get clean
+
+# Install Monorail Gems
+RUN cd /root/airbnb && rbenv local 1.9.3-p551 && bash --login -c bundle
