@@ -9,7 +9,7 @@ RUN apt-get install -y --force-yes zlib1g-dev libssl-dev libreadline-dev libyaml
 RUN apt-get clean
 
 # Install sparkey
-git clone https://github.com/spotify/sparkey.git && (cd sparkey && autoreconf --install && ./configure && make && sudo make install && sudo ldconfig) && rm -rf sparkey
+RUN git clone https://github.com/spotify/sparkey.git && (cd sparkey && autoreconf --install && ./configure && make && sudo make install && sudo ldconfig) && rm -rf sparkey
 
 # Install rbenv and ruby-build
 RUN git clone https://github.com/sstephenson/rbenv.git /root/.rbenv
