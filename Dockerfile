@@ -31,3 +31,17 @@ RUN xargs -L 1 rbenv install < /root/versions.txt
 RUN echo 'gem: --no-rdoc --no-ri' >> /.gemrc
 RUN bash -l -c 'for v in $(cat /root/versions.txt); do rbenv global $v; gem update --system && gem install bundler; done'
 
+# Generate a SSH key
+RUN apt-get -y install openssh-client
+RUN ssh-keygen -q -t rsa -N '' -f /id_rsa
+
+RUN mkdir /root/.ssh
+RUN chmod 700 /root/.ssh
+RUN mv /id_rsa* /root/.ssh
+RUN chmod 700 /root/.ssh/*
+
+# show public key
+RUN cat /root/.ssh/id_rsa.pub
+
+# Add GHE to known hosts
+RUN ssh-keyscan git.musta.ch >> ~/.ssh/known_hosts
