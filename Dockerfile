@@ -5,8 +5,11 @@ MAINTAINER tcnksm "https://github.com/tcnksm"
 # Install packages for building ruby
 RUN apt-get update
 RUN apt-get install -y --force-yes build-essential curl git
-RUN apt-get install -y --force-yes zlib1g-dev libssl-dev libreadline-dev libyaml-dev libxml2-dev libxslt-dev
+RUN apt-get install -y --force-yes zlib1g-dev libssl-dev libreadline-dev libyaml-dev libxml2-dev libxslt-dev libsnappy-dev
 RUN apt-get clean
+
+# Install sparkey
+git clone https://github.com/spotify/sparkey.git && (cd sparkey && autoreconf --install && ./configure && make && sudo make install && sudo ldconfig) && rm -rf sparkey
 
 # Install rbenv and ruby-build
 RUN git clone https://github.com/sstephenson/rbenv.git /root/.rbenv
