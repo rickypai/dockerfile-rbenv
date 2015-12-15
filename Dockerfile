@@ -8,6 +8,9 @@ RUN apt-get install -y --force-yes build-essential curl git autoconf
 RUN apt-get install -y --force-yes zlib1g-dev libssl-dev libreadline-dev libyaml-dev libxml2-dev libxslt-dev libsnappy-dev
 RUN apt-get clean
 
+RUN apt-get install -y --force-yes libtool
+RUN apt-get clean
+
 # Install sparkey
 RUN git clone https://github.com/spotify/sparkey.git && (cd sparkey && autoreconf --install && ./configure && make && sudo make install && sudo ldconfig) && rm -rf sparkey
 
